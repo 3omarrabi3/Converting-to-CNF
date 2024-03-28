@@ -113,7 +113,7 @@ def converting_to_CNF(formula):
 
     formula = eliminate_existential_quantifiers(formula)
     formula = eliminate_universal_quantifiers(formula)
-    # formula = convert_clause(formula)
+    formula = convert_clause(formula)
 
     return formula
 
