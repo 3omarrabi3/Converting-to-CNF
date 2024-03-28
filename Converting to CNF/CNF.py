@@ -77,11 +77,10 @@ def eliminate_universal_quantifiers(formula):
 
 
 
-
 def convert_clause(clause):
-    split_clause = re.split(r'\s+\&\s*', clause)  # Splitting only at '|'
+    split_clause = re.split(r'\s*\&\s+', clause)  # Splitting only at '|'
 
-    pattern = r'(~?[A-Za-z]+\([A-Za-z]+\))'
+    pattern = r'(~?[A-Za-z]+\((?:[A-Za-z]+\([^()]*\)|[A-Za-z]+)\))'
 
     converted_clause = []
 
@@ -96,6 +95,7 @@ def convert_clause(clause):
         converted_clause.append(match_set)
 
     return converted_clause
+
 
 # # Example usage
 # clause = "(X(x) | (Y(y)) & (Z(z) | A(w)) & (B(p) | C(q)"
@@ -113,7 +113,7 @@ def converting_to_CNF(formula):
 
     formula = eliminate_existential_quantifiers(formula)
     formula = eliminate_universal_quantifiers(formula)
-    formula = convert_clause(formula)
+    # formula = convert_clause(formula)
 
     return formula
 
