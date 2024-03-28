@@ -1,16 +1,24 @@
 import re
 
+
+#------------------------------------------------------------
 def eliminate_implication(formula):
     equivalent_expression = re.sub(r'(?P<antecedent>[A-Za-z][(A-Za-z)]+)\s*->\s*(?P<consequent>[A-Za-z][(A-Za-z)]+)',
                                    r'(~\1 | \2)', formula)
     return equivalent_expression
 
+
+
+#------------------------------------------------------------
 def eliminate_equivalence(formula):
     equivalent_expression = re.sub(r'(?P<antecedent>[A-Za-z][(A-Za-z)]+)\s*<->\s*(?P<consequent>[A-Za-z][(A-Za-z)]+)',
                                    r'(~\1 | \2) & (\1 | ~\2)', formula)
 
     return equivalent_expression
 
+
+
+#------------------------------------------------------------
 def apply_demorgan_law(formula):
     # Pattern for negating conjunction (AND)
     conjunction_pattern = re.compile(r'~\((.*?)\s*&\s*(.*?)\)')
@@ -23,11 +31,17 @@ def apply_demorgan_law(formula):
 
     return formula
 
+
+
+#------------------------------------------------------------
 def remove_double_negation(formula):
     while '~~' in formula:
         formula = formula.replace('~~', '')
     return formula
 
+
+
+#------------------------------------------------------------
 def moving_all_quantifiers_to_the_left(formula):
      regex_pattern = r"For all\s\w|Exist\s\w"
      regex_pattern_FA = r"For all\s\w"
@@ -42,6 +56,9 @@ def moving_all_quantifiers_to_the_left(formula):
 
      return modified_string
 
+
+
+#------------------------------------------------------------
 def eliminate_existential_quantifiers(formula):
     pattern_EX = re.compile(r'Exist\s+([a-zA-Z]+)\s*')
 
@@ -69,6 +86,9 @@ def eliminate_existential_quantifiers(formula):
 
     return modified_string
 
+
+
+#------------------------------------------------------------
 def eliminate_universal_quantifiers(formula):
     pattern = re.compile(r'For\s+all\s+[a-zA-Z]+\s*')
     new_formula = re.sub(pattern, '', formula)
@@ -77,6 +97,20 @@ def eliminate_universal_quantifiers(formula):
 
 
 
+#------------------------------------------------------------
+def replace_variables(match):
+    statements = match.group(0)
+    variables = re.findall(r'\b\w\(([^)]*)\)', statements)
+    if len(variables) > 1:
+        replaced_statement = statements
+        for var in variables[1:]:
+            replaced_statement = replaced_statement.replace(var, variables[0])
+    else:
+        replaced_statement = statements
+    return replaced_statement
+
+
+#------------------------------------------------------------
 def convert_clause(clause):
     split_clause = re.split(r'\s*\&\s+', clause)  # Splitting only at '|'
 
@@ -94,13 +128,20 @@ def convert_clause(clause):
 
         converted_clause.append(match_set)
 
+
     return converted_clause
 
 
 # # Example usage
-# clause = "(X(x) | (Y(y)) & (Z(z) | A(w)) & (B(p) | C(q)"
+# clause = "(X(x) | (Y(y)) & (Z(z) | A(w)) & (B(p) | C(f(q)))"
 # converted = convert_clause(clause)
 # print(converted)
+#
+# converted = str(converted)
+# final_result = re.sub(r'\{[^}]*}', replace_variables, converted)
+# print(final_result)
+
+
 
 formula = 'For all x (~p(x) | Exist y ((q(x,y) & ~p(y))'
 def converting_to_CNF(formula):
